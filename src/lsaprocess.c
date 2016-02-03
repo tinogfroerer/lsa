@@ -1,10 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 
 #include "lsabase.h"
 #include "lsaprocess.h"
 #include "log2xorseq.h"
+
+/* Here for debugging purposes */
+static void printplane (const char *pmask, const int bits)
+{
+	
+	int i;
+	for (i = 0; i < bits; i++) {
+		int nr;
+		nr = (int)pmask[i];
+		printf("%d", nr);
+	}
+	printf("\n");
+}
 
 // @return: Returns 1 if neither don't care or used flags are set
 static int check_care(char c)
@@ -134,42 +148,97 @@ static char check_mask(const char *db, const char *basemask, \
 }
 
 /*
- * @brief: Searches for the biggest plain of $(id)'s and DONTCARES
+ * @brief: Searches for the biggest plane of $(id)'s and DONTCARES
  * @param: char *basemask: The mask where we stem from
  * @param: const int bits: How many bits the (char-)bitmask is wide
  * @param: char id: Are we looking for ONES or ZEROS
  * @param: const int c: From where up we are searching (default=0)
  * @return: Pointer to the biggest mask
  */
-static char* get_mask(const char *db, char *basemask, \
+static char* get_mask(const char *db, const char *basemask, \
 											const int bits, const char id, const int c)
 {
 	char curc; // We are checking from curc to above
 	
+	/* Debugging check_mask segv issue
+	printf("reclvl: %d\n", c);
+	printf("basemask: ");
+	printplane(basemask, bits); */
+	/*We are getting a stackoverflow ... */
+	
 	// Check the basemask. If it is wrong, return NULL
 	if (check_mask(db, basemask, id, bits)) {
 	// It is correct. Check the derivates
-		/*
-		for (curc = c; curc < bits; curc++) {
-		char *dermask = malloc(bits * sizeof(char)); // Derivate mask
-		} */
-	} 
+		char *dermask[bits-c]; // These are the derivates
+		// The resmask is the ret of the next get_mask()
+		// It is NULL if there was no good mask, or the best mask found
+		char *resmask[bits-c];
+		int i; // counter
+		for (curc = c, i = 0; curc < bits; curc++, i++) {
+			// Make the derivate mask
+			dermask[i] = malloc(bits * sizeof(char)); // Derivate mask
+			memcpy(dermask[i], basemask, bits * sizeof(char));
+			dermask[i][curc] = 2;
+			// Now feed it back to this function recursively
+			resmask[i] = get_mask(db, dermask[i], bits, id, curc + 1);
+		} 
+		// We got all the masks we want, so free the dermasks
+		// Also, check for the best resmask already
+		char* bestmask = NULL;
+		int bestscore = 0;
+		for (i = 0; i < bits - c; i++) {
+			free(dermask[i]);
+			// check for the best mask
+			int score = 0;
+			if (resmask[i]) score = amount_in_ar(resmask[i], bits, 2);
+			if (bestscore < score) {
+				bestscore = score;
+				// Wait a sec. This one is better, Delete the old one!
+				if (bestmask) free(bestmask);
+				// Now replace the dangling pointer with the new hero!
+				bestmask = resmask[i];
+			} else {
+				// No highscore? Delete that crap!
+				if (resmask[i]) free(resmask[i]);
+			}
+		} 
+		
+		/* Debugging here:
+		if (bestmask && c == 0) {
+			printf("At level 0: ");
+			printplane(bestmask, bits);
+			printf("\n");
+		}
+		else if (c == 0) {
+			printf("At level 0: ");
+			printplane(basemask, bits);
+			printf("\n");
+		}*/
+		
+		// If there is a winner mask, return it. If not, move on.
+		if (bestmask) return bestmask;
+
+		// The mask is correct, but we didn't find better masks
+		char *basemask_cp = malloc(bits * sizeof(char));
+		memcpy(basemask_cp, basemask, bits * sizeof(char));
+		return basemask_cp;
+	} /* end check_mask() */
 		
 	return NULL;
 }
 
-// Searches for the biggest plain of all ones (or don't cares)
+// Searches for the biggest plane of all ones (or don't cares)
 // In this function itself, there are only initializers to get le mask
 // The function deals with the memory issues (saves new plane)
 // The real magic takes place in the recursive get_mask function
-static char min_plane(plain *p, const char *db, \
+static char min_plane(plane *p, const char *db, \
 											const char *curdb, const int bits, \
 											const unsigned int count)
 {
 	if (!(*curdb & 1)) return 0; // We're doing minterms, we need ones
 	
-	// There is going to be a plain, so allocate memory for it
-	p->next = malloc(sizeof(plain));
+	// There is going to be a plane, so allocate memory for it
+	p->next = malloc(sizeof(plane));
 	p = p->next;
 	p->next = NULL;
 	
@@ -182,22 +251,22 @@ static char min_plane(plain *p, const char *db, \
 	return 1;
 }
 
-plainparent process(char *db, const int bits, const int db_size)
+planeparent process(char *db, const int bits, const int db_size)
 {
 	
 	const char *begin = db; // This is the start adress
 	const char *end = db + db_size;
 	unsigned int count = 0; // Maybe not used
 	
-	plain *minp = malloc(sizeof(plain));
-	plain *maxp = malloc(sizeof(plain));
+	plane *minp = malloc(sizeof(plane));
+	plane *maxp = malloc(sizeof(plane));
 	minp->psingle = NULL;
 	maxp->psingle = NULL;
 	minp->next = NULL;
 	maxp->next = NULL;
-	plain *curmin = minp; // Pointers to the youngest minp child
-	plain *curmax = maxp; 
-	plainparent parent = {minp, maxp};
+	plane *curmin = minp; // Pointers to the youngest minp child
+	plane *curmax = maxp; 
+	planeparent parent = {minp, maxp};
 	
 	for (count = 0; db < end; db++, count++) {
 		char minflag;
@@ -210,9 +279,23 @@ plainparent process(char *db, const int bits, const int db_size)
 		
 		minflag = min_plane(curmin, begin, db, bits, count);
 		// max_plane(curmax, begin, db, bits);
-		// tbi: set newest plain members as used
-		if (minflag);
+		// tbi: set newest plane members as used
+		// Right now, this tells the prgrm to break after first plane
+		if (minflag) {
+			// There is a new element, so go to that element
+			curmin = curmin->next;
+			break;
+		} 
 	}
+	
+	// Yey, we are done processing.
+	// Now skip the first elements of minp and maxp, they're useless
+	plane *obsolete_p = minp;
+	minp = minp->next;
+	free(obsolete_p);
+	// maxp not implemented yet, so just free it, will ya
+	free(maxp);
+	maxp = NULL;
 	
 	return parent;
 }

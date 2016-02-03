@@ -40,6 +40,19 @@ void printdb (const char *db, const char const *end)
 }
 */
 
+/* Here for debugging purposes */
+void printplane (const char *pmask, const int bits)
+{
+	
+	int i;
+	for (i = 0; i < bits; i++) {
+		int nr;
+		nr = (int)pmask[i];
+		printf("%d", nr);
+	}
+	printf("\n");
+}
+
 int main ()
 {
 	char db[max_db_size]; // The main database
@@ -66,7 +79,14 @@ int main ()
 		;
 	} 
 	
-	process(db, bits, db_size);
+	planeparent pp = process(db, bits, db_size);
+	char *pmask = pp.minp->psingle;
 	
+	if (!pmask) {
+		fprintf(stderr, "NULL POINTER!\n");
+		return 1;
+	}
+	// Because I'm only going for the first minp element, print it
+	printplane(pmask, bits);
 	return 0;
 }

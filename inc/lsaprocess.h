@@ -10,19 +10,19 @@
 #ifndef LSAPROCESS_H
 #define LSAPROCESS_H
 
-typedef struct plain {
+typedef struct plane {
 	char *psingle; // A single plane
-	struct plain *next;
-} plain;
+	struct plane *next;
+} plane;
 
 typedef struct {
-	plain *maxp;
-	plain *minp;
-} plainparent;
+	plane *maxp;
+	plane *minp;
+} planeparent;
 
 /*
  * @brief: The parent function. Only calls other functions
  */
-plainparent process(char *db, const int bits, const int db_size);
+planeparent process(char *db, const int bits, const int db_size);
 
 #endif /* LSAPROCESS_H */
