@@ -9,12 +9,13 @@
  * Any version below 1.0 is not functional yet:
  * v0.1: database functional
  * v0.2: minterms working
- * v0.3: alter mask processing to ensure better visibilty
- * v0.4: maxterms working
- * v0.5: outputting functional
+ * v0.3 minterms optimal
+ * v0.4: alter mask processing to ensure better visibilty
+ * v0.5: maxterms working
+ * v0.6: outputting functional
  * v1.0: working, but only slightly tested
  * 
- * @version: 0.1
+ * @version: 0.2
  */
 
 #include <stdio.h>
@@ -80,14 +81,19 @@ int main ()
 	} 
 	
 	planeparent pp = process(db, bits, db_size);
+	plane *minp = pp.minp;
 	
-	char *pmask = pp.minp->psingle;
-	// Because I'm only going for the first minp element, print it
-	printplane(pmask, bits);
-	
-	// Now, make valgrind happy, will ya
-	free(pp.minp->psingle);
-	free(pp.minp);
+	if(minp == NULL) return 0; // If there are no planes...
+	// Now comes the printing part
+	do {
+		char *pmask = minp->psingle;
+		printplane(pmask, bits);
+		// Now, make valgrind happy, will ya
+		plane *next = minp->next;
+		free(minp->psingle);
+		free(minp);
+		minp = next;
+	} while (minp);
 	
 	return 0;
 }

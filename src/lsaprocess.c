@@ -165,7 +165,7 @@ static char* get_mask(const char *db, const char *basemask, \
 	printf("reclvl: %d\n", c);
 	printf("basemask: ");
 	printplane(basemask, bits); */
-	/*We are getting a stackoverflow ... */
+	/*We were getting a stackoverflow ... */
 	
 	// Check the basemask. If it is wrong, return NULL
 	if (check_mask(db, basemask, id, bits)) {
@@ -234,7 +234,7 @@ static char* get_mask(const char *db, const char *basemask, \
 // The function deals with the memory issues (saves new plane)
 // The real magic takes place in the recursive get_mask function
 static char min_plane(plane *p, const char *db, \
-											const char *curdb, const int bits, \
+											const char const *curdb, const int bits, \
 											const unsigned int count)
 {
 	if (!(*curdb & 1)) return 0; // We're doing minterms, we need ones
@@ -253,10 +253,40 @@ static char min_plane(plane *p, const char *db, \
 	return 1;
 }
 
+void flag_used(char *db, const char *basemask, const int bits)
+{
+	// Nr of free axis
+	unsigned int n_dc = amount_in_ar(basemask, bits, 2);
+	unsigned int constmask; // A mask that is fixed
+	unsigned int db_size = 1 << bits;
+	
+	// varmask is xored with constmask, to give address to check
+	// n_dc_der is a derivate of n_dc. n_dc_der cannot be 0 =>
+	unsigned int n_dc_der = (n_dc > 0) ? n_dc : 1;
+	unsigned int varmask[n_dc_der]; 
+	unsigned int i; // local counter
+	// Make the masks
+	constmask = get_const_mask(basemask, bits);
+	for (i = 0; i < n_dc; i++) {
+		varmask[i] = get_var_mask(basemask, bits, i + 1);
+	}
+	
+	// Now start flagging all the mask members used
+	unsigned int times = 1 << n_dc; // How many times the loop is exec.
+	for (i = 0; i < times; i++) {
+		assert(constmask < db_size); // If otherwise, out of bound db
+		*(db + constmask) |= USED; // Flag as used
+		// Alter constmask with the right varmask
+		// The right varmask is given by th log2.. func
+		// Sadly, the log2xorseq(times-1) is equal to n_dc, so I have to %
+		constmask ^= varmask[log2xorseq(i) % n_dc_der];
+	}
+}
+
 planeparent process(char *db, const int bits, const int db_size)
 {
 	
-	const char *begin = db; // This is the start adress
+	char *begin = db; // This is the start adress
 	const char *end = db + db_size;
 	unsigned int count = 0; // Maybe not used
 	
@@ -286,7 +316,8 @@ planeparent process(char *db, const int bits, const int db_size)
 		if (minflag) {
 			// There is a new element, so go to that element
 			curmin = curmin->next;
-			break;
+			// Flag everything matching to the new plane as used
+			flag_used(begin, curmin->psingle, bits);
 		} 
 	}
 	
