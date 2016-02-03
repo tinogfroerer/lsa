@@ -1,0 +1,10 @@
+BUG ALERT:
+
+In lasprocess.c
+In function get_mask:
+
+const char idmask = id | DONTCARE:
+This will work, if id is 1.
+If it is 0, there will be a missing comparison.
+This is because we are comparing with bitwise &.
+We need to change the protocol so maxterms with id=0 work too.
