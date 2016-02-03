@@ -6,8 +6,6 @@
 #include "lsaprocess.h"
 #include "log2xorseq.h"
 
-#define DEBUG 1
-
 // @return: Returns 1 if neither don't care or used flags are set
 static int check_care(char c)
 {
@@ -150,20 +148,20 @@ static char* get_mask(const char *db, char *basemask, \
 	
 	// Check the basemask. If it is wrong, return NULL
 	if (check_mask(db, basemask, id, bits)) {
-		printf("1");
-	} else {
-		printf("0");
-	}
-	
-	/*
-	for (curc = c; curc < bits; curc++) {
+	// It is correct. Check the derivates
+		/*
+		for (curc = c; curc < bits; curc++) {
 		char *dermask = malloc(bits * sizeof(char)); // Derivate mask
-	} */
-	
+		} */
+	} 
+		
 	return NULL;
 }
 
 // Searches for the biggest plain of all ones (or don't cares)
+// In this function itself, there are only initializers to get le mask
+// The function deals with the memory issues (saves new plane)
+// The real magic takes place in the recursive get_mask function
 static char min_plane(plain *p, const char *db, \
 											const char *curdb, const int bits, \
 											const unsigned int count)

@@ -8,10 +8,10 @@
  * sixteen input-bits.
  * Any version below 1.0 is not functional yet:
  * v0.1: database functional
- * v0.3: minterms working
+ * v0.2: minterms working
+ * v0.3: alter mask processing to ensure better visibilty
  * v0.4: maxterms working
- * v0.5: don't cares working
- * v0.6: outputting functional
+ * v0.5: outputting functional
  * v1.0: working, but only slightly tested
  * 
  * @version: 0.1
