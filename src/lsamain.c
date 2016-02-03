@@ -80,13 +80,14 @@ int main ()
 	} 
 	
 	planeparent pp = process(db, bits, db_size);
-	char *pmask = pp.minp->psingle;
 	
-	if (!pmask) {
-		fprintf(stderr, "NULL POINTER!\n");
-		return 1;
-	}
+	char *pmask = pp.minp->psingle;
 	// Because I'm only going for the first minp element, print it
 	printplane(pmask, bits);
+	
+	// Now, make valgrind happy, will ya
+	free(pp.minp->psingle);
+	free(pp.minp);
+	
 	return 0;
 }

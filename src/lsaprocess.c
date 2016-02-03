@@ -7,7 +7,7 @@
 #include "lsaprocess.h"
 #include "log2xorseq.h"
 
-/* Here for debugging purposes */
+/* Here for debugging purposes 
 static void printplane (const char *pmask, const int bits)
 {
 	
@@ -18,7 +18,7 @@ static void printplane (const char *pmask, const int bits)
 		printf("%d", nr);
 	}
 	printf("\n");
-}
+} */
 
 // @return: Returns 1 if neither don't care or used flags are set
 static int check_care(char c)
@@ -116,9 +116,10 @@ static unsigned int get_var_mask(const char *basemask, \
 static char check_mask(const char *db, const char *basemask, \
 											 const int id, const int bits)
 {
-	int n_dc = amount_in_ar(basemask, bits, 2); // Nr of free axis
+	// Nr of free axis
+	unsigned int n_dc = amount_in_ar(basemask, bits, 2);
 	unsigned int constmask; // A mask that is fixed
-	int db_size = 1 << bits;
+	unsigned int db_size = 1 << bits;
 	
 	// varmask is xored with constmask, to give address to check
 	// n_dc_der is a derivate of n_dc. n_dc_der cannot be 0 =>
@@ -223,7 +224,8 @@ static char* get_mask(const char *db, const char *basemask, \
 		memcpy(basemask_cp, basemask, bits * sizeof(char));
 		return basemask_cp;
 	} /* end check_mask() */
-		
+	
+	if (c == 0) assert(0); // The first basemask should never fail
 	return NULL;
 }
 
@@ -265,8 +267,8 @@ planeparent process(char *db, const int bits, const int db_size)
 	minp->next = NULL;
 	maxp->next = NULL;
 	plane *curmin = minp; // Pointers to the youngest minp child
-	plane *curmax = maxp; 
-	planeparent parent = {minp, maxp};
+	// plane *curmax = maxp; 
+	planeparent parent;
 	
 	for (count = 0; db < end; db++, count++) {
 		char minflag;
@@ -296,6 +298,10 @@ planeparent process(char *db, const int bits, const int db_size)
 	// maxp not implemented yet, so just free it, will ya
 	free(maxp);
 	maxp = NULL;
+	
+	// Now this is what we return
+	parent.minp = minp;
+	parent.maxp = maxp;
 	
 	return parent;
 }
