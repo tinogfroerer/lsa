@@ -29,7 +29,8 @@ static int check_care(char c)
 // @return: Returns 1 if element at dbelement is = id or DONTCARE
 char check_element (const char c, const char id)
 {
-	if ((c & DONTCARE) || (c == id)) return 1;
+	// c & 0x1 is necessary so we filter the USED flag
+	if ((c & DONTCARE) || ((c & 0x1) == id)) return 1;
 	return 0; // else
 }
 

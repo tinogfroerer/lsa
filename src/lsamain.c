@@ -15,7 +15,7 @@
  * v0.6: outputting functional
  * v1.0: working, but only slightly tested
  * 
- * @version: 0.2
+ * @version: 0.3
  */
 
 #include <stdio.h>
