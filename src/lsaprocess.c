@@ -302,11 +302,12 @@ planeparent process(char *db, const int bits, const int db_size)
 	minp->next = NULL;
 	maxp->next = NULL;
 	plane *curmin = minp; // Pointers to the youngest minp child
-	// plane *curmax = maxp; 
+	plane *curmax = maxp; 
 	planeparent parent;
 	
 	for (count = 0; db < end; db++, count++) {
-		char minflag;
+		char minflag = 0;
+		char maxflag = 0;
 		
 		if(!check_care(*db)) continue; // If used or don't care are set
 		
@@ -315,7 +316,7 @@ planeparent process(char *db, const int bits, const int db_size)
 		#endif
 		
 		minflag = min_plane(curmin, begin, db, bits, count);
-		// max_plane(curmax, begin, db, bits);
+		//max_plane(curmax, begin, db, bits, count);
 		// tbi: set newest plane members as used
 		// Right now, this tells the prgrm to break after first plane
 		if (minflag) {
@@ -323,7 +324,7 @@ planeparent process(char *db, const int bits, const int db_size)
 			curmin = curmin->next;
 			// Flag everything matching to the new plane as used
 			flag_used(begin, curmin->psingle, bits);
-		} 
+		} //else if (maxflag)
 	}
 	
 	// Yey, we are done processing.
