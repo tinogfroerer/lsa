@@ -26,6 +26,11 @@ typedef enum {
 	USED = 4
 } states;
 
+typedef struct plane {
+	char *psingle; // A single plane
+	struct plane *next;
+} plane;
+
 // Sets all fields from begin to (end - 1) zero
 void zero_array(char *begin, const char const *end);
 

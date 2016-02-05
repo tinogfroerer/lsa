@@ -28,10 +28,8 @@
 #ifndef LSAPROCESS_H
 #define LSAPROCESS_H
 
-typedef struct plane {
-	char *psingle; // A single plane
-	struct plane *next;
-} plane;
+// I moved the plane struct to lsabase.h because I need them in lsaprint
+#include "lsabase.h"
 
 typedef struct {
 	plane *maxp;
