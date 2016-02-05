@@ -14,15 +14,15 @@ x1, x2 and x3 are inputs. y is the output.
 1 = LOGIC ONE  
 2 = DONT CARE  
 
-x1 x2 x3  y
-0  0  0   0  
-0  0  1   1  
-0  1  0   1  
-0  1  1   2  
-1  0  0   0  
-1  0  1   0  
-1  1  0   2  
-1  1  1   2  
+| x1| x2| x3|| y |   
+| 0 | 0 | 0 || 0 |  
+| 0 | 0 | 1 || 1 |  
+| 0 | 1 | 0 || 1 |  
+| 0 | 1 | 1 || 2 |  
+| 1 | 0 | 0 || 0 |  
+| 1 | 0 | 1 || 0 |  
+| 1 | 1 | 0 || 2 |  
+| 1 | 1 | 1 || 2 |  
 
 The information of x1..x3 is redundant, we will always write truth tables like this.
 To calculate the function to this truth table, we simply enter the string of the output:
