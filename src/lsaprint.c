@@ -27,6 +27,16 @@
 #include "lsabase.h"
 #include "lsaprint.h"
 
+// This function checks, if there are anymore relevant vars coming
+static int notjusttwos(const char *begin, const char *end)
+{
+	int bits = end - begin;
+	// There are only irrelevant variables coming
+	if (amount_in_ar(begin, bits, 2) == bits) return 0;
+	// There are relevant variables coming
+	return 1;
+}
+
 void print_function(plane *p, const whatterm term, const int bits)
 {
 	// The little_op char is added between variables in a single minterm
@@ -64,7 +74,7 @@ void print_function(plane *p, const whatterm term, const int bits)
 			}
 			
 			printf("x%d", i);
-			if (mask > end) {
+			if (mask > end && notjusttwos(end, mask)) {
 				printf(" %c ", little_op);
 			}
 		} 
