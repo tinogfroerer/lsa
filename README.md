@@ -32,12 +32,17 @@ To calculate the function to this truth table, we simply enter the string of the
 
 This input will lead to the function output.
 
-NOTE: At the moment, it isn't outputting anything, but that'll be my next commit.
+y =  
+(¬x1 * x3) +  
+(x2)  
+
 
 ---
 
-To make the program, execute following commands:
+To install the program, execute following commands:
 
 mkdir obj
 make
+
+Then launch it with ./lsa and enter your y-string
 
