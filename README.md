@@ -41,8 +41,8 @@ y =
 
 To install the program, execute following commands:
 
-mkdir obj
-make
+mkdir obj  
+make  
 
 Then launch it with ./lsa and enter your y-string
 
