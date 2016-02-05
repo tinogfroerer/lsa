@@ -70,7 +70,7 @@ void print_function(plane *p, const whatterm term, const int bits)
 			if (*mask == 2) continue;
 			
 			if (*mask == (char)term) {
-				printf("¬");
+				printf("!");
 			}
 			
 			printf("x%d", i);

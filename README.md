@@ -25,7 +25,9 @@ x1, x2 and x3 are inputs. y is the output.
 | 1 | 1 | 1 || 2 |  
 
 The information of x1..x3 is redundant, we will always write truth tables like this.
-To calculate the function to this truth table, we simply enter the string of the output:
+To calculate the function to this truth table, we simply enter the
+y-string after starting the program with ./lsa.
+To the above truth table, we have to enter following:
 
 ./lsa  
 01120022
@@ -33,9 +35,18 @@ To calculate the function to this truth table, we simply enter the string of the
 This input will lead to the function output.
 
 y =  
-(¬x1 * x3) +  
+(!x1 * x3) +  
 (x2)  
 
+The '*' stands for AND  
+The '+' stands for OR  
+The '!' stands for NOT  
+
+Inputs are always named from x1 to xn
+
+At the moment, the maximum amount of inputs is 16.  
+It might work with more, but I'm not sure about that,
+and really, where's the point in such a function?
 
 ---
 
