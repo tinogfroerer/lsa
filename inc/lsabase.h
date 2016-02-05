@@ -34,4 +34,10 @@ typedef struct plane {
 // Sets all fields from begin to (end - 1) zero
 void zero_array(char *begin, const char const *end);
 
+/*
+ * @brief: How many $(param)s there are in $(ar)
+ */
+int amount_in_ar(const char *ar, const int bits, \
+												 const char param);
+
 #endif /* LSABASE_H */

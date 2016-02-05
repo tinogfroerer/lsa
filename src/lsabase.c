@@ -30,4 +30,14 @@ void zero_array(char *begin, const char const *end)
 	
 }
 
+int amount_in_ar(const char *ar, const int bits, \
+												 const char param)
+{
+	int counter = 0;
+	const char* const end = ar + bits;
+	for (; ar < end; ar++) {
+		if (*ar == param) counter++;
+	}
+	return counter;
+}
 
