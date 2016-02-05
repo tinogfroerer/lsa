@@ -1,8 +1,8 @@
 objects = obj/lsamain.o obj/lsabase.o obj/lsaread.o obj/lsaprocess.o \
-	obj/log2xorseq.o
+	obj/log2xorseq.o obj/lsaprint.o
 
 includes = inc/lsabase.h inc/lsaprint.h inc/lsaprocess.h inc/lsaread.h \
-  inc/lsaprocess.h inc/log2xorseq.h
+  inc/lsaprocess.h inc/log2xorseq.h inc/lsaprint.h
 
 CFLAGS += -I"./inc" -g -o
 
@@ -23,6 +23,9 @@ obj/lsaprocess.o : src/lsaprocess.c inc/lsaprocess.h inc/lsabase.h
 
 obj/log2xorseq.o : src/log2xorseq.c inc/log2xorseq.h
 	cc -c src/log2xorseq.c $(CFLAGS) obj/log2xorseq.o
+
+obj/lsaprint.o : src/lsaprint.c inc/lsaprint.h inc/lsabase.h
+	cc -c src/lsaprint.c $(CFLAGS) obj/lsaprint.o
 
 .PHONY : clean
 clean :

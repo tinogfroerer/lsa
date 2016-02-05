@@ -16,3 +16,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef LSAPRINT_H
+#define LSAPRINT_H
+
+#include "lsabase.h"
+
+typedef enum {
+	minterm=0,
+	maxterm=1
+} whatterm;
+
+void print_function(plane *p, const whatterm term, const int bits);
+
+#endif /* LSAPRINT_H */

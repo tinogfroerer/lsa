@@ -42,35 +42,12 @@
 #include "lsabase.h"
 #include "lsaread.h"
 #include "lsaprocess.h"
+#include "lsaprint.h"
 
 #define MAX_BITS 16
 
 const int max_bits = MAX_BITS;
 const int max_db_size = 1 << MAX_BITS; // Acessable with 16bit address
-
-/* Here for debugging purposes
-void printdb (const char *db, const char const *end)
-{
-	for (; db < end; db++) {
-		int d = (int)(*db);
-		printf("%i", d);
-	}
-	printf("\n");
-}
-*/
-
-/* Here for debugging purposes */
-void printplane (const char *pmask, const int bits)
-{
-	
-	int i;
-	for (i = 0; i < bits; i++) {
-		int nr;
-		nr = (int)pmask[i];
-		printf("%d", nr);
-	}
-	printf("\n");
-}
 
 int main ()
 {
@@ -98,15 +75,19 @@ int main ()
 		;
 	} 
 	
+	// This here processes the input to masks
 	planeparent pp = process(db, bits, db_size);
+	// Extract the minterms, (maxterms are TBI)
 	plane *minp = pp.minp;
 	
-	if(minp == NULL) return 0; // If there are no planes...
-	// Now comes the printing part
+	// If there are no minterms...
+	if(minp == NULL) return 0;
+	
+	// Print the minterms
+	print_function(minp, minterm, bits);
+	
+	// Now clean up the memory
 	do {
-		char *pmask = minp->psingle;
-		printplane(pmask, bits);
-		// Now, make valgrind happy, will ya
 		plane *next = minp->next;
 		free(minp->psingle);
 		free(minp);
