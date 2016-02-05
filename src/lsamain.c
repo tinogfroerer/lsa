@@ -28,12 +28,12 @@
  * v0.1: database functional
  * v0.2: minterms working
  * v0.3 minterms optimal
- * v0.4: alter mask processing to ensure better visibilty
+ * v0.4: outputting functional
  * v0.5: maxterms working
- * v0.6: outputting functional
  * v1.0: working, but only slightly tested
+ * v1.1: alter mask processing to ensure better visibilty
  * 
- * @version: 0.3
+ * @version: 0.4
  */
 
 #include <stdio.h>
