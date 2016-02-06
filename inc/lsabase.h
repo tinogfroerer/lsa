@@ -31,6 +31,15 @@ typedef struct plane {
 	struct plane *next;
 } plane;
 
+typedef enum {
+	none,
+	only_minterm,
+	only_maxterm,
+	both,
+	warranty,
+	conditions
+} dowhat;
+
 // Sets all fields from begin to (end - 1) zero
 void zero_array(char *begin, const char const *end);
 

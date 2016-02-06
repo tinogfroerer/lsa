@@ -17,29 +17,18 @@
  */
 
 /*
- * @author: Tino Gfroerer
- * @date: February 2nd, 2016
+ *	@author: Tino Gfroerer
+ * 	@date: February 6th, 2016
  *
- * @brief:
- * This file contains the declarations for all functions processing
- * the bitfield database, in order to get a function output.
+ *	@brief: Declared functions print out licensing and app. info
  */
 
-#ifndef LSAPROCESS_H
-#define LSAPROCESS_H
+#ifndef LSAMAN_H
+#define LSAMAN_H
 
-// I moved the plane struct to lsabase.h because I need them in lsaprint
-#include "lsabase.h"
+void print_GPL();
+void print_man();
+void print_warranty();
+void print_conditions();
 
-typedef struct {
-	plane *maxp;
-	plane *minp;
-} planeparent;
-
-/*
- * @brief: The parent function. Only calls other functions
- */
-planeparent process(char *db, const int bits, const int db_size, \
-										const dowhat todo);
-
-#endif /* LSAPROCESS_H */
+#endif /* LSAMAN_H */

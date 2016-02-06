@@ -31,9 +31,8 @@
  * v0.4: outputting functional
  * v0.5: maxterms working
  * v1.0: working, but only slightly tested
- * v1.1: alter mask processing to ensure better visibilty
  * 
- * @version: 0.5
+ * @version: 1.0
  */
 
 #include <stdio.h>
@@ -46,6 +45,7 @@
 #include "lsaread.h"
 #include "lsaprocess.h"
 #include "lsaprint.h"
+#include "lsaman.h"
 
 #define MAX_BITS 16
 
@@ -60,7 +60,7 @@ dowhat cmdopt(int argc, char **argv)
 {
 	dowhat todo = none;
 	char ch;
-	while((ch = getopt(argc, argv, "iab?")) != EOF)
+	while((ch = getopt(argc, argv, "iabwc?")) != EOF)
 		switch (ch) {
 		case 'i':
 			todo = only_minterm;
@@ -71,26 +71,16 @@ dowhat cmdopt(int argc, char **argv)
 		case 'b':
 			todo = both;
 			break;
+		case 'c':
+			todo = conditions;
+			break;
+		case 'w':
+			todo = warranty;
 		default: // Display GNU info	
 			;
 		}
 		
 	return todo;
-}
-
-void display_GPL()
-{
-	;
-}
-
-void display_man()
-{
-	puts("lsa: Calculates logical functions\n");
-	puts("Options");
-	puts("-i for only minterms");
-	puts("-a for only maxterms");
-	puts("-b for both");
-	puts("-? for info");
 }
 
 int main (int argc, char **argv)
@@ -103,11 +93,18 @@ int main (int argc, char **argv)
 	dowhat todo = cmdopt(argc, argv);
 	argc -= optind;
 	argv += optind;
-	if (todo == none) {
-		display_GPL();
-		display_man();
+	if (todo == warranty) {
+		print_warranty();
+		return 0;
+	} else if (todo == conditions) {
+		print_conditions();
 		return 0;
 	}
+	else if (todo == none) {
+		print_GPL();
+		print_man();
+		return 0;
+	} // else process
 	
 	zero_array(db, db + max_db_size); // Sets elements in the array zero
 	
