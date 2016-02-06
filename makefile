@@ -5,7 +5,7 @@ includes = inc/lsabase.h inc/lsaprint.h inc/lsaprocess.h \
 	inc/lsaread.h  inc/lsaprocess.h inc/log2xorseq.h inc/lsaprint.h \
 	inc/lsaman.h
 
-CFLAGS += -I"./inc" -g -o
+CFLAGS += -I"./inc" -O3 -o
 
 lsa : $(objects)
 	cc -o lsa $(objects)
