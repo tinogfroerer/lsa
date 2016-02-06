@@ -16,6 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Contact me: 'tino.gfroerer@gmail.com' */
+
 #ifndef LSAREAD_H
 #define LSAREAD_H
 

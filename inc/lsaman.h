@@ -21,6 +21,8 @@
  * 	@date: February 6th, 2016
  *
  *	@brief: Declared functions print out licensing and app. info
+ *
+ * 	Contact me: 'tino.gfroerer@gmail.com'
  */
 
 #ifndef LSAMAN_H

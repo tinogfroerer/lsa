@@ -16,6 +16,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * @brief: The print_function prints logical functions.
+ *
+ * Contact me: 'tino.gfroerer@gmail.com'
+ */
+
 #ifndef LSAPRINT_H
 #define LSAPRINT_H
 

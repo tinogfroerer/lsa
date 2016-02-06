@@ -23,6 +23,8 @@
  * @brief:
  * This file contains the declarations for all functions processing
  * the bitfield database, in order to get a function output.
+ *
+ * Contact me: 'tino.gfroerer@gmail.com'
  */
 
 #ifndef LSAPROCESS_H

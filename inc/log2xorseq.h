@@ -21,6 +21,8 @@
  * @date: February 3rd, 2016
  *
  * @brief: Defines a special sequence (see below)
+ *
+ * Contact me: 'tino.gfroerer@gmail.com'
  */
 
 #ifndef LOG2XORSEQ_H

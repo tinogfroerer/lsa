@@ -15,6 +15,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+ 
+/*
+ * @brief: Defines types and functions used in various sections of lsa
+ *
+ * Contact me: 'tino.gfroerer@gmail.com'
+ */
 
 #ifndef LSABASE_H
 #define LSABASE_H
