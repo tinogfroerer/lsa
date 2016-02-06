@@ -234,15 +234,16 @@ static char* get_mask(const char *db, const char *basemask, \
 	return NULL;
 }
 
-// Searches for the biggest plane of all ones (or don't cares)
+// Searches for the biggest plane where all elements have the
+// value $(id) (or don't care)
 // In this function itself, there are only initializers to get le mask
 // The function deals with the memory issues (saves new plane)
 // The real magic takes place in the recursive get_mask function
-static char min_plane(plane *p, const char *db, \
+static char term_plane(plane *p, const char *db, \
 											const char const *curdb, const int bits, \
-											const unsigned int count)
+											const unsigned int count, const int id)
 {
-	if (!(*curdb & 1)) return 0; // We're doing minterms, we need ones
+	if (!((*curdb & 1) == id)) return 0;
 	
 	// There is going to be a plane, so allocate memory for it
 	p->next = malloc(sizeof(plane));
@@ -253,7 +254,7 @@ static char min_plane(plane *p, const char *db, \
 	init_mask(basemask, count, bits);
 	
 	// Give us the best mask with ONES, starting at bit 0
-	p->psingle = get_mask(db, basemask, bits, 1, 0); 
+	p->psingle = get_mask(db, basemask, bits, id, 0); 
 	
 	return 1;
 }
@@ -315,16 +316,18 @@ planeparent process(char *db, const int bits, const int db_size)
 		printf("Element: %x\n", count);
 		#endif
 		
-		minflag = min_plane(curmin, begin, db, bits, count);
-		//max_plane(curmax, begin, db, bits, count);
-		// tbi: set newest plane members as used
-		// Right now, this tells the prgrm to break after first plane
+		minflag = term_plane(curmin, begin, db, bits, count, 1);
+		maxflag = term_plane(curmax, begin, db, bits, count, 0);
+
 		if (minflag) {
 			// There is a new element, so go to that element
 			curmin = curmin->next;
 			// Flag everything matching to the new plane as used
 			flag_used(begin, curmin->psingle, bits);
-		} //else if (maxflag)
+		} else if (maxflag) {
+			curmax = curmax->next;
+			flag_used(begin, curmax->psingle, bits);
+		} else assert(*db == DONTCARE || *db == 0);
 	}
 	
 	// Yey, we are done processing.
@@ -333,8 +336,9 @@ planeparent process(char *db, const int bits, const int db_size)
 	minp = minp->next;
 	free(obsolete_p);
 	// maxp not implemented yet, so just free it, will ya
-	free(maxp);
-	maxp = NULL;
+	obsolete_p = maxp;
+	maxp = maxp->next;
+	free(obsolete_p);
 	
 	// Now this is what we return
 	parent.minp = minp;

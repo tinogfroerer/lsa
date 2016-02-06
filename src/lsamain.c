@@ -33,7 +33,7 @@
  * v1.0: working, but only slightly tested
  * v1.1: alter mask processing to ensure better visibilty
  * 
- * @version: 0.4
+ * @version: 0.5
  */
 
 #include <stdio.h>
@@ -79,12 +79,14 @@ int main ()
 	planeparent pp = process(db, bits, db_size);
 	// Extract the minterms, (maxterms are TBI)
 	plane *minp = pp.minp;
+	plane *maxp = pp.maxp;
 	
 	// If there are no minterms...
 	if(minp == NULL) return 0;
 	
 	// Print the minterms
 	print_function(minp, minterm, bits);
+	print_function(maxp, maxterm, bits);
 	
 	// Now clean up the memory
 	do {
