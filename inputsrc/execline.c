@@ -38,8 +38,8 @@ int main ()
 			free(line);
 			line = NULL;
 			
-			// Now execute lsa
-			execl("../lsa", "../lsa", 0);
+			// Now execute lsa with min and maxterms
+			execl("../lsa", "../lsa", "-b", 0);
 		}
 		
 		// Parent

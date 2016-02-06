@@ -7,7 +7,7 @@ This function is useful to test the speed of ./lsa
 
 Example:
 make input
-time ./input 16 | ../lsa > outputfile
+time ./input 16 | ../lsa -i > outputfile
 
 ------------------------------------------------------------------------
 
@@ -26,4 +26,8 @@ cat outputfile
 
 (Yes, I know, there might be cmdline arguments to do what ./execline
  does, but I don't know them)
+
+Also, if you want to test only min or maxterms, change that in:
+execline.c:
+Line 42
 

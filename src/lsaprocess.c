@@ -289,7 +289,8 @@ void flag_used(char *db, const char *basemask, const int bits)
 	}
 }
 
-planeparent process(char *db, const int bits, const int db_size)
+planeparent process(char *db, const int bits, const int db_size, \
+										const dowhat todo)
 {
 	
 	char *begin = db; // This is the start adress
@@ -316,8 +317,10 @@ planeparent process(char *db, const int bits, const int db_size)
 		printf("Element: %x\n", count);
 		#endif
 		
-		minflag = term_plane(curmin, begin, db, bits, count, 1);
-		maxflag = term_plane(curmax, begin, db, bits, count, 0);
+		if (todo == only_minterm || todo == both)
+			minflag = term_plane(curmin, begin, db, bits, count, 1);
+		if (todo == only_maxterm || todo == both)
+			maxflag = term_plane(curmax, begin, db, bits, count, 0);
 
 		if (minflag) {
 			// There is a new element, so go to that element
@@ -327,7 +330,7 @@ planeparent process(char *db, const int bits, const int db_size)
 		} else if (maxflag) {
 			curmax = curmax->next;
 			flag_used(begin, curmax->psingle, bits);
-		} else assert(*db == DONTCARE || *db == 0);
+		}
 	}
 	
 	// Yey, we are done processing.

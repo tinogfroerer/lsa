@@ -29,7 +29,7 @@ To calculate the function to this truth table, we simply enter the
 y-string after starting the program with ./lsa.
 To the above truth table, we have to enter following:
 
-./lsa  
+./lsa -i
 01120022
 
 This input will lead to the function output.
@@ -56,4 +56,9 @@ mkdir obj
 make  
 
 Then launch it with ./lsa and enter your y-string
+
+For only minterms: use -i  
+For only maxterms: use -a  
+For both: use -b
+
 

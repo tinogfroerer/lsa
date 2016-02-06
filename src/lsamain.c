@@ -38,6 +38,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "lsabase.h"
 #include "lsaread.h"
@@ -49,11 +52,62 @@
 const int max_bits = MAX_BITS;
 const int max_db_size = 1 << MAX_BITS; // Acessable with 16bit address
 
-int main ()
+// Works with cmdline options
+// Use following after this function exits:
+// 	argc -= optind;
+//	argv += optind;
+dowhat cmdopt(int argc, char **argv) 
+{
+	dowhat todo = none;
+	char ch;
+	while((ch = getopt(argc, argv, "iab?")) != EOF)
+		switch (ch) {
+		case 'i':
+			todo = only_minterm;
+			break;
+		case 'a':
+			todo = only_maxterm;
+			break;
+		case 'b':
+			todo = both;
+			break;
+		default: // Display GNU info	
+			;
+		}
+		
+	return todo;
+}
+
+void display_GPL()
+{
+	;
+}
+
+void display_man()
+{
+	puts("lsa: Calculates logical functions\n");
+	puts("Options");
+	puts("-i for only minterms");
+	puts("-a for only maxterms");
+	puts("-b for both");
+	puts("-? for info");
+}
+
+int main (int argc, char **argv)
 {
 	char db[max_db_size]; // The main database
 	int bits = 0; // The amount of input bits used
 	int db_size = 0;
+	
+	// Are we gonna do minterms, maxterms or both?
+	dowhat todo = cmdopt(argc, argv);
+	argc -= optind;
+	argv += optind;
+	if (todo == none) {
+		display_GPL();
+		display_man();
+		return 0;
+	}
 	
 	zero_array(db, db + max_db_size); // Sets elements in the array zero
 	
@@ -87,25 +141,34 @@ int main ()
 	}
 	
 	// This here processes the input to masks
-	planeparent pp = process(db, bits, db_size);
+	planeparent pp = process(db, bits, db_size, todo);
 	// Extract the minterms, (maxterms are TBI)
 	plane *minp = pp.minp;
 	plane *maxp = pp.maxp;
 	
-	// If there are no minterms...
-	if(minp == NULL) return 0;
+	// If there are no terms
+	if (minp == NULL && maxp == NULL) return 0;
 	
 	// Print the minterms
-	print_function(minp, minterm, bits);
-	print_function(maxp, maxterm, bits);
+	if (todo == only_minterm || todo == both)
+		print_function(minp, minterm, bits);
+	if (todo == only_maxterm || todo == both)
+		print_function(maxp, maxterm, bits);
 	
 	// Now clean up the memory
-	do {
+	while (minp) {
 		plane *next = minp->next;
 		free(minp->psingle);
 		free(minp);
 		minp = next;
-	} while (minp);
+	}
+	
+	while (maxp) {
+		plane *next = maxp->next;
+		free(maxp->psingle);
+		free(maxp);
+		maxp = next;
+	}
 	
 	return 0;
 }

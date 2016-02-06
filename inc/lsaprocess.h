@@ -36,9 +36,17 @@ typedef struct {
 	plane *minp;
 } planeparent;
 
+typedef enum {
+	none,
+	only_minterm,
+	only_maxterm,
+	both
+} dowhat;
+
 /*
  * @brief: The parent function. Only calls other functions
  */
-planeparent process(char *db, const int bits, const int db_size);
+planeparent process(char *db, const int bits, const int db_size, \
+										const dowhat todo);
 
 #endif /* LSAPROCESS_H */
