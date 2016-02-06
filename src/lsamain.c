@@ -75,6 +75,17 @@ int main ()
 		;
 	} 
 	
+	// If there are no 0/1 print y=1/y=0 and exit
+	int ones_in_db = amount_in_ar(db, db_size, (char)1);
+	int zeros_in_db = amount_in_ar(db, db_size, (char)0);
+	if (zeros_in_db == 0) {
+		printf("y =\n1\n");
+		return 0;
+	} else if (ones_in_db == 0) {
+		printf("y =\n0\n");
+		return 0;
+	}
+	
 	// This here processes the input to masks
 	planeparent pp = process(db, bits, db_size);
 	// Extract the minterms, (maxterms are TBI)
