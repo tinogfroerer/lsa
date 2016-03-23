@@ -43,7 +43,8 @@ typedef enum {
 	only_maxterm,
 	both,
 	warranty,
-	conditions
+	conditions,
+	version
 } dowhat;
 
 // Sets all fields from begin to (end - 1) zero

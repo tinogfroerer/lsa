@@ -64,3 +64,8 @@ void print_conditions()
 	puts("download the GPL v3.0 license from:");
 	puts("http://www.gnu.org/licenses/gpl-3.0.txt");
 }
+
+void print_version(const char *version) {
+	puts("lsa:  Copyright (C) 2016  Tino Gfroerer");
+	printf("Version: %s\n", version);
+}

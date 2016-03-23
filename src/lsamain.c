@@ -49,6 +49,8 @@
 
 #define MAX_BITS 16
 
+const char *VERSION = "1.0";
+
 const int max_bits = MAX_BITS;
 const int max_db_size = 1 << MAX_BITS; // Acessable with 16bit address
 
@@ -60,7 +62,7 @@ dowhat cmdopt(int argc, char **argv)
 {
 	dowhat todo = none;
 	char ch;
-	while((ch = getopt(argc, argv, "iabwc?")) != EOF)
+	while((ch = getopt(argc, argv, "iabwc?v")) != EOF)
 		switch (ch) {
 		case 'i':
 			todo = only_minterm;
@@ -76,6 +78,10 @@ dowhat cmdopt(int argc, char **argv)
 			break;
 		case 'w':
 			todo = warranty;
+			break;
+		case 'v':
+			todo = version;
+			break;
 		default: // Display GNU info	
 			;
 		}
@@ -98,6 +104,9 @@ int main (int argc, char **argv)
 		return 0;
 	} else if (todo == conditions) {
 		print_conditions();
+		return 0;
+	} else if (todo == version) {
+		print_version(VERSION);
 		return 0;
 	}
 	else if (todo == none) {

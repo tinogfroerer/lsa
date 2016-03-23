@@ -32,5 +32,6 @@ void print_GPL();
 void print_man();
 void print_warranty();
 void print_conditions();
+void print_version(const char *version);
 
 #endif /* LSAMAN_H */
